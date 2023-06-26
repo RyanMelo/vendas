@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ryanmelo.vendas.entity.Cliente;
 import com.ryanmelo.vendas.repository.ClienteRepository;
 
-@Controller
+@RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
@@ -28,7 +27,6 @@ public class ClienteController {
     ClienteRepository clienteRepository;
 
     @GetMapping(value = "/{id}")
-    @ResponseBody
     public ResponseEntity<Cliente> getClienteById(@PathVariable Integer id) {
 
         Optional<Cliente> cliente = clienteRepository.findById(id);
@@ -41,7 +39,6 @@ public class ClienteController {
     }
 
     @GetMapping(value = "")
-    @ResponseBody
     public ResponseEntity<List<Cliente>> getAllClientes(Cliente filtro) {
         
         ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
@@ -54,7 +51,6 @@ public class ClienteController {
     }
 
     @PostMapping(value = "")
-    @ResponseBody
     public ResponseEntity<Cliente> postCliente(@RequestBody Cliente cliente) {
         Cliente clienteSalvo = clienteRepository.save(cliente);
 
@@ -62,7 +58,6 @@ public class ClienteController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @ResponseBody
     public ResponseEntity<Cliente> deleteCliente(@PathVariable Integer id) {
         Optional<Cliente> cliente = clienteRepository.findById(id);
 
@@ -75,7 +70,6 @@ public class ClienteController {
     }
 
     @PutMapping(value = "/{id}")
-    @ResponseBody
     public ResponseEntity<Cliente> atualizaCliente(@PathVariable Integer id, @RequestBody Cliente cliente) {
         
         return clienteRepository.findById(id).map(clienteExistente -> {
