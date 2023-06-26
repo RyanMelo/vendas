@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ryanmelo.vendas.entity.Produto;
 import com.ryanmelo.vendas.repository.ProdutoRepository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
