@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ryanmelo.vendas.dto.PedidoDTO;
 import com.ryanmelo.vendas.entity.Pedido;
-import com.ryanmelo.vendas.repository.PedidoRepository;
 import com.ryanmelo.vendas.service.PedidoService;
 
 @RestController
@@ -19,15 +18,13 @@ public class PedidoController {
     @Autowired
     PedidoService pedidoService;
 
-    @Autowired
-    PedidoRepository pedidoRepository;
 
     @PostMapping(value = "")
-    public ResponseEntity<Integer> salvarCliente(@RequestBody PedidoDTO pedido) {
+    public ResponseEntity<PedidoDTO> salvarCliente(@RequestBody Pedido pedido) {
 
         Pedido pedidoSalvo = pedidoService.salvarPedido(pedido);
 
-        return ResponseEntity.created(null).body(pedidoSalvo.getId());
+        return ResponseEntity.ok().build();
     }
 
 }

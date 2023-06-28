@@ -1,5 +1,7 @@
 package com.ryanmelo.vendas.dto;
 
+import com.ryanmelo.vendas.entity.ItemPedido;
+
 public class ItemPedidoDTO {
     private Integer pedido;
     private Integer produto;
@@ -10,6 +12,11 @@ public class ItemPedidoDTO {
     public ItemPedidoDTO(Integer produto, Integer quantidade) {
         this.produto = produto;
         this.quantidade = quantidade;
+    }
+
+    public ItemPedidoDTO(ItemPedido itemPedido) {
+        this.produto = itemPedido.getProduto().getId();
+        this.quantidade = itemPedido.getQuantidade();
     }
 
     public Integer getPedido() {

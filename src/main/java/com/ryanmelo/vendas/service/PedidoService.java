@@ -1,23 +1,19 @@
 package com.ryanmelo.vendas.service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ryanmelo.vendas.dto.PedidoDTO;
-import com.ryanmelo.vendas.dto.ItemPedidoDTO;
-import com.ryanmelo.vendas.entity.Cliente;
 import com.ryanmelo.vendas.entity.ItemPedido;
 import com.ryanmelo.vendas.entity.Pedido;
-import com.ryanmelo.vendas.entity.Produto;
 import com.ryanmelo.vendas.repository.ClienteRepository;
 import com.ryanmelo.vendas.repository.ItemPedidoRepository;
 import com.ryanmelo.vendas.repository.PedidoRepository;
 import com.ryanmelo.vendas.repository.ProdutoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PedidoService {
@@ -34,49 +30,14 @@ public class PedidoService {
     @Autowired
     ItemPedidoRepository itemPedidoRepository;
 
-
-    public Pedido salvarPedido(PedidoDTO pedidoDTO) {
+    @Transactional
+    public PedidoDTO salvarPedido(Pedido pedidoParaSalvar) {
         
-        Integer idCliente = pedidoDTO.getCliente();
+        itemPedidoRepository.saveAll(pedidoParaSalvar.getItens());
+        Pedido pedido = pedidoRepository.saveAll(pedidoParaSalvar);
+        PedidoDTO pedidoSalvo = new PedidoDTO(pedido);
+        return pedidoSalvo;
 
-        Cliente cliente = clienteRepository.findById(idCliente).get();
-
-        Pedido pedido = new Pedido();
-        pedido.setCliente(cliente);
-        pedido.setDataPedido(LocalDate.now());
-        pedido.setTotal(pedidoDTO.getTotal());
-
-        List<ItemPedido> itens = converterListarPedidos(pedido,  pedidoDTO.getItens());
-
-        pedidoRepository.save(pedido);
-        itemPedidoRepository.saveAll(itens);
-
-        pedido.setItens(itens);
-        // Cliente
-        // Data
-        // total
-        // itens
-
-        return pedido;
     }
-
-    private List<ItemPedido> converterListarPedidos(Pedido pedido, List<ItemPedidoDTO> itens) {
-
-        if(itens.isEmpty()) {
-            throw new ServiceException("Itens vazio");
-        }
-
-        return itens.stream().map(item -> { 
-            Integer idProduto = item.getProduto();
-            Produto produto = produtoRepository.findById(idProduto).get();
-
-            ItemPedido itemPedido = new ItemPedido();
-            itemPedido.setPedido(pedido);
-            itemPedido.setProduto(produto);
-            itemPedido.setQuantidade(item.getQuantidade());
-            return itemPedido;
-        }).collect(Collectors.toList());
-
-    }   
 
 }

@@ -3,17 +3,26 @@ package com.ryanmelo.vendas.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.ryanmelo.vendas.entity.ItemPedido;
+import com.ryanmelo.vendas.entity.Pedido;
+
 public class PedidoDTO {
     private Integer cliente;
     private BigDecimal total;
-    private List<ItemPedidoDTO> itens;
+    private List<ItemPedido> itens;
 
     public PedidoDTO() {}
 
-    public PedidoDTO(Integer cliente, BigDecimal total, List<ItemPedidoDTO> itens) {
+    public PedidoDTO(Integer cliente, BigDecimal total, List<ItemPedido> itens) {
         this.cliente = cliente;
         this.total = total;
         this.itens = itens;
+    }
+
+    public PedidoDTO(Pedido pedido) {
+        this.cliente = pedido.getCliente().getId();
+        this.total = pedido.getTotal();
+        this.itens = pedido.getItens();
     }
 
     public Integer getCliente() {
@@ -32,11 +41,11 @@ public class PedidoDTO {
         this.total = total;
     }
 
-    public List<ItemPedidoDTO> getItens() {
+    public List<ItemPedido> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemPedidoDTO> itens) {
+    public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
     }
 }
