@@ -18,13 +18,12 @@ public class PedidoController {
     @Autowired
     PedidoService pedidoService;
 
-
     @PostMapping(value = "")
-    public ResponseEntity<PedidoDTO> salvarCliente(@RequestBody PedidoDTO pedido) {
+    public ResponseEntity<Integer> salvarCliente(@RequestBody PedidoDTO pedido) {
 
         Pedido pedidoSalvo = pedidoService.salvarPedido(pedido);
 
-        return ResponseEntity.ok().body(pedidoSalvo);
+        return ResponseEntity.ok().body(pedidoSalvo.getId());
     }
 
 }

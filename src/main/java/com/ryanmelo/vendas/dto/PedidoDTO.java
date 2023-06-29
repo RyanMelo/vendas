@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.ryanmelo.vendas.entity.ItemPedido;
-import com.ryanmelo.vendas.entity.Pedido;
 
 public class PedidoDTO {
     private Integer cliente;

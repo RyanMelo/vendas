@@ -1,7 +1,6 @@
 package com.ryanmelo.vendas.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,7 +8,6 @@ import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ryanmelo.vendas.dto.ItemPedidoDTO;
 import com.ryanmelo.vendas.dto.PedidoDTO;
 import com.ryanmelo.vendas.entity.Cliente;
 import com.ryanmelo.vendas.entity.ItemPedido;
@@ -20,14 +18,12 @@ import com.ryanmelo.vendas.repository.ItemPedidoRepository;
 import com.ryanmelo.vendas.repository.PedidoRepository;
 import com.ryanmelo.vendas.repository.ProdutoRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class PedidoService {
 
     @Autowired
     ClienteRepository clienteRepository;
-    
+
     @Autowired
     PedidoRepository pedidoRepository;
 
@@ -37,50 +33,48 @@ public class PedidoService {
     @Autowired
     ItemPedidoRepository itemPedidoRepository;
 
-// {
-// 	"cliente": 1,
-// 	"total": 5700.00,
-// 	"itens": [
-// 		{
-// 			"produto": 1,
-// 			"quantidade": 1
-// 		}
-// 	]
-// }
 
-    @Transactional
-    public PedidoDTO salvarPedido(PedidoDTO pedidoParaSalvarDto) {
-        
-        Pedido pedido = new Pedido();
-        Integer idCliente = pedidoParaSalvarDto.getCliente();
+    public Pedido salvarPedido(PedidoDTO pedidoDTO) {
+
+        Integer idCliente = pedidoDTO.getCliente();
+
         Cliente cliente = clienteRepository.findById(idCliente).get();
 
+        Pedido pedido = new Pedido();
         pedido.setCliente(cliente);
-        pedido.setTotal(pedidoParaSalvarDto.getTotal());
         pedido.setDataPedido(LocalDate.now());
+        pedido.setTotal(pedidoDTO.getTotal());
 
-        List<ItemPedido> itensPedido = converterListaPedidos(pedido, pedidoParaSalvarDto.getItens());
-        
-        itemPedidoRepository.saveAll(itensPedido);
-        pedido.setItens(itensPedido);
+        List<ItemPedido> itens = converterListarPedidos(pedido,  pedidoDTO.getItens());
+
         pedidoRepository.save(pedido);
+        itemPedidoRepository.saveAll(itens);
 
-        return new PedidoDTO(pedido);
+        pedido.setItens(itens);
+        // Cliente
+        // Data
+        // total
+        // itens
+        return pedido;
     }
 
-    private List<ItemPedido> converterListaPedidos(Pedido pedido, List<ItemPedidoDTO> itensDto) {
+    private List<ItemPedido> converterListarPedidos(Pedido pedido, List<ItemPedido> list) {
+
+        if(list.isEmpty()) {
+            throw new ServiceException("Itens vazio");
+        }
         
-        return itensDto.stream().map(itemPedidoDto -> {
-            
-            Integer idProduto = itemPedidoDto.getProduto();
+        return list.stream().map(item -> { 
+            Integer idProduto = item.getProduto().getId();
             Produto produto = produtoRepository.findById(idProduto).get();
-            
+
             ItemPedido itemPedido = new ItemPedido();
             itemPedido.setPedido(pedido);
             itemPedido.setProduto(produto);
-            itemPedido.setQuantidade(itemPedidoDto.getQuantidade());
-            
+            itemPedido.setQuantidade(item.getQuantidade());
             return itemPedido;
         }).collect(Collectors.toList());
-    }
+
+    }   
+
 }
