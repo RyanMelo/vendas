@@ -19,12 +19,6 @@ public class PedidoDTO {
         this.itens = itens;
     }
 
-    public PedidoDTO(Pedido pedido) {
-        this.cliente = pedido.getCliente().getId();
-        this.total = pedido.getTotal();
-        this.itens = pedido.getItens();
-    }
-
     public Integer getCliente() {
         return cliente;
     }

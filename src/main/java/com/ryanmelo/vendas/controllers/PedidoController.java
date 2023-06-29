@@ -20,11 +20,11 @@ public class PedidoController {
 
 
     @PostMapping(value = "")
-    public ResponseEntity<PedidoDTO> salvarCliente(@RequestBody Pedido pedido) {
+    public ResponseEntity<PedidoDTO> salvarCliente(@RequestBody PedidoDTO pedido) {
 
         Pedido pedidoSalvo = pedidoService.salvarPedido(pedido);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(pedidoSalvo);
     }
 
 }
