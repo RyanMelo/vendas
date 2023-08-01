@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +12,7 @@ import com.ryanmelo.vendas.entity.Cliente;
 import com.ryanmelo.vendas.entity.ItemPedido;
 import com.ryanmelo.vendas.entity.Pedido;
 import com.ryanmelo.vendas.entity.Produto;
+import com.ryanmelo.vendas.exceptions.ServiceExceptionMessage;
 import com.ryanmelo.vendas.repository.ClienteRepository;
 import com.ryanmelo.vendas.repository.ItemPedidoRepository;
 import com.ryanmelo.vendas.repository.PedidoRepository;
@@ -61,12 +61,16 @@ public class PedidoService {
     private List<ItemPedido> converterListarPedidos(Pedido pedido, List<ItemPedido> list) {
 
         if(list.isEmpty()) {
-            throw new ServiceException("Itens vazio");
+            throw new ServiceExceptionMessage("Itens vazio");
         }
         
         return list.stream().map(item -> { 
             Integer idProduto = item.getProduto().getId();
-            Produto produto = produtoRepository.findById(idProduto).get();
+            Produto produto = produtoRepository
+                .findById(idProduto)
+                .orElseThrow(
+                    () -> new ServiceExceptionMessage("Produto não encontrado")
+                );
 
             ItemPedido itemPedido = new ItemPedido();
             itemPedido.setPedido(pedido);
