@@ -46,8 +46,10 @@ public class PedidoService {
         List<ItemPedido> itens = pedidoDTO.getItens().stream().map(item -> {
             ItemPedido itemPedido = new ItemPedido();
             Produto produto = produtoRepository.findById(item.getProduto()).get();
-            itemPedido.setProduto(produto);
             itemPedido.setQuantidade(item.getQuantidade());
+            itemPedido.setPedido(pedido);
+            itemPedido.setProduto(produto);
+            itemPedidoRepository.save(itemPedido);
             pedidoRepository.save(pedido);
             return itemPedido;
         }).collect(Collectors.toList());
@@ -58,5 +60,10 @@ public class PedidoService {
 
         return pedido;
     }
+
+    // public List<Pedido> listarPedidos() {
+    //     List<Pedido> pedido = pedidoRepository.findAll();
+    //     return pedido;
+    // }
 
 }
