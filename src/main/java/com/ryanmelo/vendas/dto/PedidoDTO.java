@@ -3,16 +3,14 @@ package com.ryanmelo.vendas.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.ryanmelo.vendas.entity.ItemPedido;
-
 public class PedidoDTO {
     private Integer cliente;
     private BigDecimal total;
-    private List<ItemPedido> itens;
+    private List<ItemPedidoDTO> itens;
 
     public PedidoDTO() {}
 
-    public PedidoDTO(Integer cliente, BigDecimal total, List<ItemPedido> itens) {
+    public PedidoDTO(Integer cliente, BigDecimal total, List<ItemPedidoDTO> itens) {
         this.cliente = cliente;
         this.total = total;
         this.itens = itens;
@@ -34,11 +32,16 @@ public class PedidoDTO {
         this.total = total;
     }
 
-    public List<ItemPedido> getItens() {
+    public List<ItemPedidoDTO> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemPedido> itens) {
+    public void setItens(List<ItemPedidoDTO> itens) {
         this.itens = itens;
+    }
+
+    @Override
+    public String toString() {
+        return "PedidoDTO [cliente=" + cliente + ", total=" + total + ", itens=" + itens + "]";
     }
 }

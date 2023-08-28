@@ -1,7 +1,11 @@
 package com.ryanmelo.vendas.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +23,22 @@ public class PedidoController {
     PedidoService pedidoService;
 
     @PostMapping(value = "")
-    public ResponseEntity<Integer> salvarCliente(@RequestBody PedidoDTO pedido) {
+    public ResponseEntity<Integer> salvarPedido(@RequestBody PedidoDTO pedido) {
 
         Pedido pedidoSalvo = pedidoService.salvarPedido(pedido);
 
-        return ResponseEntity.ok().body(pedidoSalvo.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoSalvo.getId());
     }
 
+    // @GetMapping(value = "")
+    // public ResponseEntity<List<Pedido>> listarPedidos() {
+    //     List<Pedido> pedidos = pedidoService.listarPedidos();
+    //     return ResponseEntity.ok(pedidos);
+    // }
+
+    // @GetMapping(value = "/{id}")
+    // public ResponseEntity<String> getProdutoDetalhado(@PathVariable Integer id) {
+    //     PedidoDTO pedidoDTO = pedidoService.getPedidoDetalhado(id);
+    //     return ResponseEntity.ok().body(pedidoDTO.toString());
+    // }
 }

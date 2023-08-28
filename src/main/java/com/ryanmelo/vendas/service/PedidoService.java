@@ -12,11 +12,12 @@ import com.ryanmelo.vendas.entity.Cliente;
 import com.ryanmelo.vendas.entity.ItemPedido;
 import com.ryanmelo.vendas.entity.Pedido;
 import com.ryanmelo.vendas.entity.Produto;
-import com.ryanmelo.vendas.exceptions.ServiceExceptionMessage;
 import com.ryanmelo.vendas.repository.ClienteRepository;
 import com.ryanmelo.vendas.repository.ItemPedidoRepository;
 import com.ryanmelo.vendas.repository.PedidoRepository;
 import com.ryanmelo.vendas.repository.ProdutoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PedidoService {
@@ -33,52 +34,30 @@ public class PedidoService {
     @Autowired
     ItemPedidoRepository itemPedidoRepository;
 
-
+    @Transactional
     public Pedido salvarPedido(PedidoDTO pedidoDTO) {
-
-        Integer idCliente = pedidoDTO.getCliente();
-
-        Cliente cliente = clienteRepository.findById(idCliente).get();
-
-        Pedido pedido = new Pedido();
-        pedido.setCliente(cliente);
-        pedido.setDataPedido(LocalDate.now());
-        pedido.setTotal(pedidoDTO.getTotal());
-
-        List<ItemPedido> itens = converterListarPedidos(pedido,  pedidoDTO.getItens());
-
-        pedidoRepository.save(pedido);
-        itemPedidoRepository.saveAll(itens);
-
-        pedido.setItens(itens);
-        // Cliente
-        // Data
-        // total
-        // itens
-        return pedido;
-    }
-
-    private List<ItemPedido> converterListarPedidos(Pedido pedido, List<ItemPedido> list) {
-
-        if(list.isEmpty()) {
-            throw new ServiceExceptionMessage("Itens vazio");
-        }
         
-        return list.stream().map(item -> { 
-            Integer idProduto = item.getProduto().getId();
-            Produto produto = produtoRepository
-                .findById(idProduto)
-                .orElseThrow(
-                    () -> new ServiceExceptionMessage("Produto não encontrado")
-                );
+        Pedido pedido = new Pedido();
+        Cliente cliente  = clienteRepository.findById(pedidoDTO.getCliente()).get();
 
+        pedido.setCliente(cliente);
+        pedido.setTotal(pedidoDTO.getTotal());
+        
+
+        List<ItemPedido> itens = pedidoDTO.getItens().stream().map(item -> {
             ItemPedido itemPedido = new ItemPedido();
-            itemPedido.setPedido(pedido);
+            Produto produto = produtoRepository.findById(item.getProduto()).get();
             itemPedido.setProduto(produto);
             itemPedido.setQuantidade(item.getQuantidade());
+            pedidoRepository.save(pedido);
             return itemPedido;
         }).collect(Collectors.toList());
 
-    }   
+        pedido.setItens(itens);
+
+        pedidoRepository.save(pedido);
+
+        return pedido;
+    }
 
 }
