@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ryanmelo.vendas.entity.Produto;
 import com.ryanmelo.vendas.repository.ProdutoRepository;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutosController {
@@ -52,7 +54,7 @@ public class ProdutosController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto) {
+    public ResponseEntity<Produto> criarProduto(@RequestBody @Valid Produto produto) {
 
         Produto produtoSalvo = produtoRepository.save(produto);
 

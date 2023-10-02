@@ -1,6 +1,7 @@
 package com.ryanmelo.vendas.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.math.BigDecimal;
 
@@ -14,12 +15,14 @@ public class Produto {
     private Integer id;
 
     @Column(name = "descricao")
+    @NotEmpty(message = "Descrição não pode ser vazia")
     private String descricao;
 
     @Column(name = "preco_unitario", precision = 20, scale = 2)
     private BigDecimal preco;
 
-    public Produto() {}
+    public Produto() {
+    }
 
     public Produto(String descricao, BigDecimal preco) {
         this.descricao = descricao;

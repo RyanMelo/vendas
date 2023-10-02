@@ -1,5 +1,6 @@
 package com.ryanmelo.vendas.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +36,13 @@ public class PedidoService {
 
     @Transactional
     public Pedido salvarPedido(PedidoDTO pedidoDTO) {
-        
+
         Pedido pedido = new Pedido();
-        Cliente cliente  = clienteRepository.findById(pedidoDTO.getCliente()).get();
+        Cliente cliente = clienteRepository.findById(pedidoDTO.getCliente()).get();
 
         pedido.setCliente(cliente);
         pedido.setTotal(pedidoDTO.getTotal());
-        
+        pedido.setDataPedido(LocalDate.now());
 
         List<ItemPedido> itens = pedidoDTO.getItens().stream().map(item -> {
             ItemPedido itemPedido = new ItemPedido();
